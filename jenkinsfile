@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Spell Check') {
+            steps {
+                script {
+                    // Run codespell on the details-app directory
+                    sh 'codespell details-app'
+                }
+            }
+        }
+
+        stage('Python Code Quality Check with Pylint') {
+            steps {
+                script {
+                    // Run pylint on all Python files in the details-app directory
+                    sh 'pylint details-app/**/*.py'
+                }
+            }
+        }
+
+        stage('Shell Check') {
+            steps {
+                script {
+                    // Run shellcheck on all shell scripts in the details-app directory
+                    sh '''
+                        find details-app -name "*.sh" -print0 | xargs -0 shellcheck
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run pytest in the details-app directory
+                    sh 'cd details-app && pytest'
+                }
+            }
+        }
+
+        stage('Build Container') {
+            steps {
+                script {
+                    // Build Docker image
+                    sh 'cd details-app && docker build -t jenkins-pipeline-task .'
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    // Push Docker image to Docker Hub
+                    withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_HUB_TOKEN')]) {
+                        sh '''
+                        docker login -u danors -p $DOCKER_HUB_TOKEN
+                        docker push jenkins-pipeline-task
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
