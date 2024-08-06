@@ -5,8 +5,13 @@ pipeline {
         stage('Spell Check') {
             steps {
                 script {
-                    // Run codespell on the details-app directory
+                    echo "Starting Spell Check stage"
+                    
+                    // Run Spell check on the details-app directory.
+                    echo "Running Spell Check on the details-app directory"
                     sh 'codespell details-app'
+                    
+                    echo "Completed Spell Check stage"
                 }
             }
         }
@@ -14,8 +19,13 @@ pipeline {
         stage('Python Code Quality Check with Pylint') {
             steps {
                 script {
-                    // Run pylint on all Python files in the details-app directory
+                    echo "Starting Python Code Quality Check stage"
+                    
+                    // Run pylint on all Python files in the details-app directory.
+                    echo "Running pylint on all Python files in the details-app directory"
                     sh 'pylint details-app/**/*.py'
+                    
+                    echo "Completed Python Code Quality Check stage"
                 }
             }
         }
@@ -23,10 +33,15 @@ pipeline {
         stage('Shell Check') {
             steps {
                 script {
-                    // Run shellcheck on all shell scripts in the details-app directory
+                    echo "Starting Shell Check stage"
+                    
+                    // Run shellcheck on all shell scripts in the details-app directory.
+                    echo "Running shellcheck on all shell scripts in the details-app directory"
                     sh '''
                         find details-app -name "*.sh" -print0 | xargs -0 shellcheck
                     '''
+                    
+                    echo "Completed Shell Check stage"
                 }
             }
         }
@@ -34,8 +49,13 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Run pytest in the details-app directory
+                    echo "Starting Run Tests stage"
+                    
+                    // Run pytest in the details-app directory.
+                    echo "Running pytest in the details-app directory"
                     sh 'cd details-app && pytest'
+                    
+                    echo "Completed Run Tests stage"
                 }
             }
         }
@@ -43,8 +63,13 @@ pipeline {
         stage('Build Container') {
             steps {
                 script {
-                    // Build Docker image
+                    echo "Starting Build Container stage"
+                    
+                    // Build Docker image for the Jenkins task.
+                    echo "Building Docker image for the Jenkins task"
                     sh 'cd details-app && docker build -t jenkins-pipeline-task .'
+                    
+                    echo "Completed Build Container stage"
                 }
             }
         }
@@ -52,13 +77,19 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
+                    echo "Starting Push to Docker Hub stage"
+                    
                     // Push Docker image to Docker Hub
+                    echo "Pushing Docker image to Docker Hub"
                     withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_HUB_TOKEN')]) {
                         sh '''
                         docker login -u danors -p $DOCKER_HUB_TOKEN
-                        docker push jenkins-pipeline-task
+                        docker tag jenkins-pipeline-task danors/jenkins-pipeline-task:latest
+                        docker push danors/jenkins-pipeline-task:latest
                         '''
                     }
+                    
+                    echo "Completed Push to Docker Hub stage"
                 }
             }
         }
