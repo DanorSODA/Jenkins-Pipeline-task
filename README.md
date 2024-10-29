@@ -23,4 +23,4 @@ This project demonstrates a Jenkins pipeline that performs various stages includ
 - Yossi Avni (responsible for runing the pytests and docker builds parts)
 
  [Install file](INSTALL.md)
- [Contributing](CONTRIBUTIONS.md)
+ [Contributintrs](CONTRIBUTIONS.md)
