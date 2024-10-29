@@ -22,5 +22,5 @@ This project demonstrates a Jenkins pipeline that performs various stages includ
 - Danor Sinai (responsible for spell check, code check, and shell check)
 - Yossi Avni (responsible for runing the pytests and docker builds parts)
 
-- [Install file](INSTALL.md)
-- [Contributing](CONTRIBUTIONS.md)
+ [Install file](INSTALL.md)
+ [Contributing](CONTRIBUTIONS.md)
